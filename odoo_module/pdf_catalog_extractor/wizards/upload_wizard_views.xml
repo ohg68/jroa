@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="pdf_catalog_upload_wizard_view_form" model="ir.ui.view">
+        <field name="name">pdf.catalog.upload.wizard.form</field>
+        <field name="model">pdf.catalog.upload.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Upload PDF Catalog">
+                <group>
+                    <field name="pdf_file" filename="pdf_filename"/>
+                    <field name="pdf_filename" invisible="1"/>
+                    <field name="extraction_mode"/>
+                    <field name="max_pages"/>
+                    <field name="auto_process"/>
+                </group>
+                <footer>
+                    <button name="action_upload" type="object" string="Upload &amp; Open" class="oe_highlight"/>
+                    <button name="action_upload_multiple" type="object" string="Upload &amp; Continue"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="pdf_catalog_upload_wizard_action" model="ir.actions.act_window">
+        <field name="name">Upload PDF Catalog</field>
+        <field name="res_model">pdf.catalog.upload.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- PRODUCT: LIST VIEW                                           -->
+    <!-- ============================================================ -->
+    <record id="pdf_catalog_product_view_list" model="ir.ui.view">
+        <field name="name">pdf.catalog.product.list</field>
+        <field name="model">pdf.catalog.product</field>
+        <field name="arch" type="xml">
+            <list string="Extracted Products" editable="bottom" decoration-warning="needs_review" decoration-success="imported" multi_edit="1">
+                <field name="catalog_id" readonly="1"/>
+                <field name="page_number" string="Pg" readonly="1" optional="show"/>
+                <field name="name"/>
+                <field name="default_code"/>
+                <field name="list_price"/>
+                <field name="categ_name"/>
+                <field name="brand" optional="show"/>
+                <field name="unit" optional="show"/>
+                <field name="description_sale" optional="hide"/>
+                <field name="needs_review"/>
+                <field name="review_reason" readonly="1" optional="show"/>
+                <field name="imported" readonly="1"/>
+                <field name="odoo_product_id" readonly="1" optional="show"/>
+                <button name="action_import_single" type="object" string="Import" icon="fa-download" invisible="imported"/>
+                <button name="action_mark_valid" type="object" icon="fa-check" title="Mark Valid" invisible="not needs_review"/>
+                <button name="action_mark_review" type="object" icon="fa-flag" title="Flag for Review" invisible="needs_review"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- PRODUCT: FORM VIEW                                           -->
+    <!-- ============================================================ -->
+    <record id="pdf_catalog_product_view_form" model="ir.ui.view">
+        <field name="name">pdf.catalog.product.form</field>
+        <field name="model">pdf.catalog.product</field>
+        <field name="arch" type="xml">
+            <form string="Extracted Product">
+                <header>
+                    <button name="action_import_single" type="object" string="Import to Odoo" class="oe_highlight" invisible="imported"/>
+                    <button name="action_open_odoo_product" type="object" string="View Odoo Product" invisible="not odoo_product_id"/>
+                    <button name="action_mark_valid" type="object" string="Mark Valid" invisible="not needs_review"/>
+                    <button name="action_mark_review" type="object" string="Flag for Review" invisible="needs_review"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Product Name"/></h1>
+                    </div>
+                    <group>
+                        <group string="Product Info">
+                            <field name="default_code"/>
+                            <field name="list_price"/>
+                            <field name="categ_name"/>
+                            <field name="brand"/>
+                            <field name="unit"/>
+                        </group>
+                        <group string="Source">
+                            <field name="catalog_id" readonly="1"/>
+                            <field name="page_number" readonly="1"/>
+                            <field name="needs_review"/>
+                            <field name="review_reason" readonly="1"/>
+                            <field name="imported" readonly="1"/>
+                            <field name="odoo_product_id" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Sales Description">
+                        <field name="description_sale" nolabel="1" colspan="2"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- PRODUCT: SEARCH VIEW                                         -->
+    <!-- ============================================================ -->
+    <record id="pdf_catalog_product_view_search" model="ir.ui.view">
+        <field name="name">pdf.catalog.product.search</field>
+        <field name="model">pdf.catalog.product</field>
+        <field name="arch" type="xml">
+            <search string="Search Products">
+                <field name="name"/>
+                <field name="default_code"/>
+                <field name="brand"/>
+                <field name="catalog_id"/>
+                <separator/>
+                <filter name="filter_needs_review" string="Needs Review" domain="[('needs_review', '=', True)]"/>
+                <filter name="filter_valid" string="Valid" domain="[('needs_review', '=', False)]"/>
+                <filter name="filter_missing_price" string="Missing Price" domain="['|', ('list_price', '=', 0), ('list_price', '=', False)]"/>
+                <filter name="filter_missing_sku" string="Missing SKU" domain="[('default_code', '=', False)]"/>
+                <filter name="filter_imported" string="Imported" domain="[('imported', '=', True)]"/>
+                <filter name="filter_not_imported" string="Not Imported" domain="[('imported', '=', False)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_catalog" string="Catalog" context="{'group_by': 'catalog_id'}"/>
+                    <filter name="group_categ" string="Category" context="{'group_by': 'categ_name'}"/>
+                    <filter name="group_brand" string="Brand" context="{'group_by': 'brand'}"/>
+                    <filter name="group_review" string="Review Status" context="{'group_by': 'needs_review'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- PRODUCT: ACTION                                              -->
+    <!-- ============================================================ -->
+    <record id="pdf_catalog_product_action" model="ir.actions.act_window">
+        <field name="name">Extracted Products</field>
+        <field name="res_model">pdf.catalog.product</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="pdf_catalog_product_view_search"/>
+        <field name="context">{'search_default_filter_not_imported': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No products extracted yet
+            </p>
+            <p>
+                Upload and process a PDF catalog to see extracted products here.
+            </p>
+        </field>
+    </record>
+
+    <!-- Action: Products needing review (for dashboard) -->
+    <record id="pdf_catalog_product_action_review" model="ir.actions.act_window">
+        <field name="name">Products Needing Review</field>
+        <field name="res_model">pdf.catalog.product</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('needs_review', '=', True)]</field>
+    </record>
+
+</odoo>

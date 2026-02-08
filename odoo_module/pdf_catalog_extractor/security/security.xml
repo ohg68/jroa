@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="module_category_pdf_catalog" model="ir.module.category">
+        <field name="name">PDF Catalog Extractor</field>
+        <field name="sequence">100</field>
+    </record>
+
+    <!-- User group: can view catalogs and products, upload, export -->
+    <record id="group_pdf_catalog_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="category_id" ref="module_category_pdf_catalog"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Manager group: can delete, configure settings -->
+    <record id="group_pdf_catalog_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="category_id" ref="module_category_pdf_catalog"/>
+        <field name="implied_ids" eval="[(4, ref('group_pdf_catalog_user'))]"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_pdf_catalog_user,pdf.catalog user,model_pdf_catalog,group_pdf_catalog_user,1,1,1,0
+access_pdf_catalog_manager,pdf.catalog manager,model_pdf_catalog,group_pdf_catalog_manager,1,1,1,1
+access_pdf_catalog_product_user,pdf.catalog.product user,model_pdf_catalog_product,group_pdf_catalog_user,1,1,1,0
+access_pdf_catalog_product_manager,pdf.catalog.product manager,model_pdf_catalog_product,group_pdf_catalog_manager,1,1,1,1
+access_pdf_catalog_upload_wizard,pdf.catalog.upload.wizard,model_pdf_catalog_upload_wizard,group_pdf_catalog_user,1,1,1,1
+access_pdf_catalog_export_wizard,pdf.catalog.export.wizard,model_pdf_catalog_export_wizard,group_pdf_catalog_user,1,1,1,1

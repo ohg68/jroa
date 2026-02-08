@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Default API key parameter (empty, to be configured by admin) -->
+    <record id="config_anthropic_api_key" model="ir.config_parameter" forcecreate="True">
+        <field name="key">pdf_catalog_extractor.anthropic_api_key</field>
+        <field name="value"></field>
+    </record>
+
+</odoo>

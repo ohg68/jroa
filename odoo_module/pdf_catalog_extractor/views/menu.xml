@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- ROOT MENU                                                    -->
+    <!-- ============================================================ -->
+    <menuitem
+        id="pdf_catalog_menu_root"
+        name="Catalog Extractor"
+        web_icon="pdf_catalog_extractor,static/description/icon.png"
+        sequence="90"
+    />
+
+    <!-- ============================================================ -->
+    <!-- SUBMENU: CATALOGS                                            -->
+    <!-- ============================================================ -->
+    <menuitem
+        id="pdf_catalog_menu_catalogs"
+        name="Catalogs"
+        parent="pdf_catalog_menu_root"
+        sequence="10"
+    />
+
+    <menuitem
+        id="pdf_catalog_menu_catalogs_all"
+        name="All Catalogs"
+        parent="pdf_catalog_menu_catalogs"
+        action="pdf_catalog_action"
+        sequence="10"
+    />
+
+    <menuitem
+        id="pdf_catalog_menu_upload"
+        name="Upload Catalog"
+        parent="pdf_catalog_menu_catalogs"
+        action="pdf_catalog_upload_wizard_action"
+        sequence="20"
+    />
+
+    <!-- ============================================================ -->
+    <!-- SUBMENU: PRODUCTS                                            -->
+    <!-- ============================================================ -->
+    <menuitem
+        id="pdf_catalog_menu_products"
+        name="Products"
+        parent="pdf_catalog_menu_root"
+        sequence="20"
+    />
+
+    <menuitem
+        id="pdf_catalog_menu_products_all"
+        name="All Extracted Products"
+        parent="pdf_catalog_menu_products"
+        action="pdf_catalog_product_action"
+        sequence="10"
+    />
+
+    <menuitem
+        id="pdf_catalog_menu_products_review"
+        name="Needs Review"
+        parent="pdf_catalog_menu_products"
+        action="pdf_catalog_product_action_review"
+        sequence="20"
+    />
+
+    <!-- ============================================================ -->
+    <!-- SUBMENU: EXPORT                                              -->
+    <!-- ============================================================ -->
+    <menuitem
+        id="pdf_catalog_menu_export"
+        name="Export CSV"
+        parent="pdf_catalog_menu_root"
+        action="pdf_catalog_export_wizard_action"
+        sequence="30"
+    />
+
+</odoo>

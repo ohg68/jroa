@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- CATALOG: LIST VIEW                                           -->
+    <!-- ============================================================ -->
+    <record id="pdf_catalog_view_list" model="ir.ui.view">
+        <field name="name">pdf.catalog.list</field>
+        <field name="model">pdf.catalog</field>
+        <field name="arch" type="xml">
+            <list string="PDF Catalogs" decoration-danger="state == 'error'" decoration-info="state == 'processing'" decoration-muted="state == 'pending'">
+                <field name="name"/>
+                <field name="state" widget="badge" decoration-success="state == 'processed'" decoration-info="state == 'processing'" decoration-danger="state == 'error'" decoration-muted="state == 'pending'"/>
+                <field name="total_pages"/>
+                <field name="file_size" string="Size (KB)"/>
+                <field name="total_products"/>
+                <field name="valid_products"/>
+                <field name="review_products" decoration-warning="review_products > 0"/>
+                <field name="processed_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- CATALOG: FORM VIEW                                           -->
+    <!-- ============================================================ -->
+    <record id="pdf_catalog_view_form" model="ir.ui.view">
+        <field name="name">pdf.catalog.form</field>
+        <field name="model">pdf.catalog</field>
+        <field name="arch" type="xml">
+            <form string="PDF Catalog">
+                <header>
+                    <button name="action_process" type="object" string="Process with AI" class="oe_highlight" invisible="state not in ('pending', 'error')"/>
+                    <button name="action_reprocess" type="object" string="Reprocess" invisible="state != 'processed'" confirm="This will replace all extracted products. Continue?"/>
+                    <button name="action_optimize_pdf" type="object" string="Optimize PDF" invisible="not pdf_file"/>
+                    <button name="action_import_to_odoo" type="object" string="Import to Odoo" class="oe_highlight" invisible="state != 'processed' or total_products == 0"/>
+                    <button name="action_reset_to_pending" type="object" string="Reset" invisible="state not in ('error', 'processed')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,processing,processed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_products" type="object" class="oe_stat_button" icon="fa-cubes" invisible="total_products == 0">
+                            <div class="o_stat_info">
+                                <field name="total_products" class="o_stat_value"/>
+                                <span class="o_stat_text">Products</span>
+                            </div>
+                        </button>
+                        <button name="action_view_review_products" type="object" class="oe_stat_button" icon="fa-exclamation-triangle" invisible="review_products == 0">
+                            <div class="o_stat_info">
+                                <field name="review_products" class="o_stat_value"/>
+                                <span class="o_stat_text">Need Review</span>
+                            </div>
+                        </button>
+                    </div>
+                    <group>
+                        <group string="PDF File">
+                            <field name="name"/>
+                            <field name="pdf_file" filename="pdf_filename"/>
+                            <field name="pdf_filename" invisible="1"/>
+                            <field name="total_pages" readonly="1"/>
+                            <field name="file_size" readonly="1"/>
+                            <field name="optimized_file" filename="name" readonly="1"/>
+                            <field name="optimized_size" readonly="1" invisible="not optimized_size"/>
+                        </group>
+                        <group string="Processing">
+                            <field name="extraction_mode"/>
+                            <field name="max_pages"/>
+                            <field name="processed_date" readonly="1"/>
+                            <field name="valid_products" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Error" invisible="not error_message">
+                        <field name="error_message" readonly="1" nolabel="1" colspan="2"/>
+                    </group>
+                    <notebook>
+                        <page string="Extracted Products" name="products">
+                            <field name="product_line_ids" nolabel="1">
+                                <list editable="bottom" decoration-warning="needs_review" decoration-success="imported">
+                                    <field name="page_number" string="Pg" optional="show" readonly="1" width="40px"/>
+                                    <field name="name"/>
+                                    <field name="default_code"/>
+                                    <field name="list_price"/>
+                                    <field name="categ_name"/>
+                                    <field name="brand" optional="show"/>
+                                    <field name="unit" optional="show"/>
+                                    <field name="description_sale" optional="hide"/>
+                                    <field name="needs_review"/>
+                                    <field name="review_reason" optional="show" readonly="1"/>
+                                    <field name="imported" readonly="1"/>
+                                    <field name="odoo_product_id" readonly="1" optional="show"/>
+                                    <button name="action_import_single" type="object" string="Import" icon="fa-download" invisible="imported"/>
+                                    <button name="action_mark_valid" type="object" string="OK" icon="fa-check" invisible="not needs_review"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- CATALOG: KANBAN VIEW                                         -->
+    <!-- ============================================================ -->
+    <record id="pdf_catalog_view_kanban" model="ir.ui.view">
+        <field name="name">pdf.catalog.kanban</field>
+        <field name="model">pdf.catalog</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile" default_group_by="state">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="total_products"/>
+                <field name="valid_products"/>
+                <field name="review_products"/>
+                <field name="total_pages"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex flex-column">
+                            <strong class="fs-5"><field name="name"/></strong>
+                            <div class="text-muted small">
+                                <field name="total_pages"/> pages
+                            </div>
+                            <div class="mt-2">
+                                <span class="badge rounded-pill text-bg-primary me-1">
+                                    <field name="total_products"/> products
+                                </span>
+                                <span class="badge rounded-pill text-bg-success me-1" t-if="record.valid_products.raw_value">
+                                    <field name="valid_products"/> valid
+                                </span>
+                                <span class="badge rounded-pill text-bg-warning" t-if="record.review_products.raw_value">
+                                    <field name="review_products"/> review
+                                </span>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- CATALOG: SEARCH VIEW                                         -->
+    <!-- ============================================================ -->
+    <record id="pdf_catalog_view_search" model="ir.ui.view">
+        <field name="name">pdf.catalog.search</field>
+        <field name="model">pdf.catalog</field>
+        <field name="arch" type="xml">
+            <search string="Search Catalogs">
+                <field name="name"/>
+                <filter name="filter_pending" string="Pending" domain="[('state', 'in', ['pending', 'processing'])]"/>
+                <filter name="filter_processed" string="Processed" domain="[('state', '=', 'processed')]"/>
+                <filter name="filter_error" string="Errors" domain="[('state', '=', 'error')]"/>
+                <filter name="filter_has_review" string="Has Products Needing Review" domain="[('review_products', '>', 0)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!-- CATALOG: ACTION                                              -->
+    <!-- ============================================================ -->
+    <record id="pdf_catalog_action" model="ir.actions.act_window">
+        <field name="name">PDF Catalogs</field>
+        <field name="res_model">pdf.catalog</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="pdf_catalog_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Upload your first PDF catalog
+            </p>
+            <p>
+                Upload PDF product catalogs and extract product data using AI.
+                Products can then be imported into Odoo or exported as CSV.
+            </p>
+        </field>
+    </record>
+
+</odoo>

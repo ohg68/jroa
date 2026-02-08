@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="pdf_catalog_export_wizard_view_form" model="ir.ui.view">
+        <field name="name">pdf.catalog.export.wizard.form</field>
+        <field name="model">pdf.catalog.export.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Export Products to CSV">
+                <group invisible="state != 'config'">
+                    <field name="catalog_id"/>
+                    <field name="filter_mode"/>
+                    <field name="include_extra_fields"/>
+                </group>
+                <group invisible="state != 'done'">
+                    <div class="alert alert-success" role="alert">
+                        <strong>CSV file generated successfully!</strong>
+                        <br/>Click the download button below.
+                    </div>
+                    <field name="export_file" filename="export_filename"/>
+                    <field name="export_filename" invisible="1"/>
+                </group>
+                <field name="state" invisible="1"/>
+                <footer>
+                    <button name="action_export" type="object" string="Generate CSV" class="oe_highlight" invisible="state != 'config'"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="pdf_catalog_export_wizard_action" model="ir.actions.act_window">
+        <field name="name">Export to CSV (Odoo)</field>
+        <field name="res_model">pdf.catalog.export.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>
