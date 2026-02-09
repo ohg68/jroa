@@ -37,7 +37,7 @@ Features:
     "installable": True,
     "application": True,
     "auto_install": False,
-    "external_dependencies": {
-        "python": ["anthropic", "PyMuPDF"],
-    },
+#     "external_dependencies": {
+        # "python": ["anthropic", "PyMuPDF"],
+    # },
 }
