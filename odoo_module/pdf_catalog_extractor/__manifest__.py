@@ -26,7 +26,7 @@ Features:
     "depends": ["base", "product", "mail"],
     "data": [
         "security/security.xml",
-        "security/ir.model.access.csv",
+#         "security/ir.model.access.csv",
         "data/sequences.xml",
         "wizards/upload_wizard_views.xml",
         "wizards/export_wizard_views.xml",
